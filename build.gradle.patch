@@ -1,0 +1,12 @@
+--- build.gradle	2024-09-27 20:21:01.399321099 +0800
++++ build.gradle.modify	2024-09-27 18:44:46.021289844 +0800
+@@ -20,6 +20,9 @@
+ 
+ buildscript {
+   repositories {
++		maven { url 'https://maven.aliyun.com/repository/public/' }
++		maven { url 'https://repo.maven.apache.org/maven2/' }
++		maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+     mavenCentral()
+   }
+   apply from: "$rootDir/gradle/dependencies.gradle"

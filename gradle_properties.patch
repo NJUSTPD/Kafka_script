@@ -1,0 +1,17 @@
+--- gradle.properties.origin	2024-09-26 19:39:57.047748088 +0800
++++ gradle.properties.modify	2024-09-27 11:02:25.600745641 +0800
+@@ -23,11 +23,12 @@
+ #  - streams/quickstart/pom.xml
+ #  - streams/quickstart/java/src/main/resources/archetype-resources/pom.xml
+ #  - streams/quickstart/java/pom.xml
+-version=4.0.0-SNAPSHOT
++version=3.8.0
+ scalaVersion=2.13.14
+ # Adding swaggerVersion in gradle.properties to have a single version in place for swagger
+ # New version of Swagger 2.2.14 requires minimum JDK 11.
+ swaggerVersion=2.2.8
+ task=build
+-org.gradle.jvmargs=-Xmx2g -Xss4m -XX:+UseParallelGC
++org.gradle.jvmargs=-Xmx2g -Xss4m -XX:+UseSerialGC -Xint 
+ org.gradle.parallel=true
++org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64

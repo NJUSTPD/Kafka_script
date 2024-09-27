@@ -12,37 +12,11 @@ java_home=/usr/lib/jvm/$(ls /usr/lib/jvm | grep -e "${java_target}" | head -n 1)
 echo "org.gradle.java.home=${java_home}" >> gradle.properties
 sed -i "/org.gradle.jvmargs=/ s/$/ -Xint/" gradle.properties
 ## build.gradle
-if [ -f ../setbuild.awk ]; then
-	rm -f ../setbuild.awk
-fi 
-cat >>../setbuild.awk << EOF
-/buildscript\s*\{/{
-    f = 1
-}
-f && /repositories\s*\{/{
-    print "  repositories {"
-    print "    maven { url \'https://maven.aliyun.com/repository/public/\' }"
-    print "    maven { url \'https://repo.maven.apache.org/maven2/\' }"
-    print "    maven { url \'https://maven.aliyun.com/repository/gradle-plugin\' }"
-    f = 0
-    next
-}
-f{
-    print
-}
-!f{
-    print
-}
-EOF
-
-awk -f ../setbuild.awk build.gradle > build.gradle.swp
-mv build.gradle build.gradle.origion
-mv build.gradle.swp build.gradle
+patch -p0  < ../build_gradle.patch 
 ## gradle/wrapper/gradle-wrapper.properties
-sed -i "s|^distributionSha256Sum|#distributionSha256Sum|" gradle/wrapper/gradle-wrapper.properties
-sed -i "s|^#distributionUrl.*|distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-8.7-all.zip|" gradle/wrapper/gradle-wrapper.properties
-sed -i "s|^validateDistributionUrl|#validateDistributionUrl|" gradle/wrapper/gradle-wrapper.properties
-
+cd gradle/wrapper/
+patch -p0 < ../../../gradle-wrapper_properties.patch  
+cd -
 #构建kafka
 ./gradlew --info --stacktrace clean 
-./gradlew --info --stacktrace jar && sleep 5 && tar -czvf kafka_compile.tar.gz kafka && echo "kafka build success!"  || echo "kafka build fail..."
+./gradlew --info --stacktrace jar && cd .. && tar -czvf kafka_compile.tar.gz kafka  && echo "kafka build success!"  || echo "kafka build fail..."
